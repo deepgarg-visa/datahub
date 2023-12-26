@@ -1,0 +1,51 @@
+# Get a business attribute by URN
+query getBusinessAttribute($urn: String!) {
+    businessAttribute(urn: $urn) {
+        ...businessAttributeFields
+    }
+}
+
+fragment businessAttributeFields on BusinessAttribute {
+    urn
+    type
+    businessAttributeInfo {
+        name
+        description
+        type
+        tags {
+            tags {
+                tag {
+                    urn
+                    properties {
+                        name
+                    }
+                }
+                associatedUrn
+            }
+        }
+        glossaryTerms {
+            terms {
+                term {
+                    urn
+                }
+                associatedUrn
+            }
+        }
+    }
+}
+
+mutation createBusinessAttribute($input: CreateBusinessAttributeInput!) {
+    createBusinessAttribute(input: $input) {
+        ...businessAttributeFields
+    }
+}
+
+mutation deleteBusinessAttribute($urn: String!) {
+    deleteBusinessAttribute(urn: $urn)
+}
+
+mutation updateBusinessAttribute($urn: String!, $input: UpdateBusinessAttributeInput!) {
+    updateBusinessAttribute(urn: $urn, input: $input) {
+        ...businessAttributeFields
+    }
+}
