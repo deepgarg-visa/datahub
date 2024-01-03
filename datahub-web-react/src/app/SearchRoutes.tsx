@@ -14,7 +14,8 @@ import { SettingsPage } from './settings/SettingsPage';
 import DomainRoutes from './domain/DomainRoutes';
 import { useIsNestedDomainsEnabled } from './useAppConfig';
 import { ManageDomainsPage } from './domain/ManageDomainsPage';
-
+import { BusinessAttributes } from './businessAttribute/BusinessAttributes';
+import BusinessAttributeRoutes from './businessAttributeNew/BusinessAttributeRoutes';
 /**
  * Container for all searchable page routes
  */
@@ -50,6 +51,8 @@ export const SearchRoutes = (): JSX.Element => {
                 <Route path={PageRoutes.INGESTION} render={() => <ManageIngestionPage />} />
                 <Route path={PageRoutes.SETTINGS} render={() => <SettingsPage />} />
                 <Route path={`${PageRoutes.GLOSSARY}*`} render={() => <GlossaryRoutes />} />
+                <Route path={`${PageRoutes.BUSINESS_ATTRIBUTE}-new`} render={() => <BusinessAttributes />} />
+                <Route path={`${PageRoutes.BUSINESS_ATTRIBUTE}*`} render={() => <BusinessAttributeRoutes />} />
                 <Route component={NoPageFound} />
             </Switch>
         </SearchablePage>
