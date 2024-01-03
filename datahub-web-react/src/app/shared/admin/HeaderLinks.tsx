@@ -7,6 +7,7 @@ import {
     SettingOutlined,
     SolutionOutlined,
     DownOutlined,
+    GlobalOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Button, Dropdown, Menu, Tooltip } from 'antd';
@@ -117,6 +118,34 @@ export function HeaderLinks(props: Props) {
                                     <NavTitleText>Domains</NavTitleText>
                                 </NavTitleContainer>
                                 <NavTitleDescription>Manage related groups of data assets</NavTitleDescription>
+                            </Link>
+                        </MenuItem>
+                        <MenuItem key="2">
+                            <Link to="/business-attribute">
+                                <NavTitleContainer>
+                                    <GlobalOutlined
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: 'bold',
+                                        }}
+                                    />
+                                    <NavTitleText>Business Attribute</NavTitleText>
+                                </NavTitleContainer>
+                                <NavTitleDescription>Universal field for data consistency</NavTitleDescription>
+                            </Link>
+                        </MenuItem>
+                        <MenuItem key="3">
+                            <Link to="/business-attribute-new">
+                                <NavTitleContainer>
+                                    <GlobalOutlined
+                                        style={{
+                                            fontSize: 14,
+                                            fontWeight: 'bold',
+                                        }}
+                                    />
+                                    <NavTitleText>Business Attribute New</NavTitleText>
+                                </NavTitleContainer>
+                                <NavTitleDescription>Universal field for data consistency</NavTitleDescription>
                             </Link>
                         </MenuItem>
                     </Menu>

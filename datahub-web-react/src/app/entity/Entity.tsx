@@ -80,6 +80,10 @@ export enum EntityCapabilityType {
      * Assigning the entity to a data product
      */
     DATA_PRODUCTS,
+    /**
+     * Assigning Business Attribute to a entity
+     */
+    BUSINESS_ATTRIBUTES,
 }
 
 /**
