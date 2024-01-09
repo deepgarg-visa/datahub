@@ -68,6 +68,7 @@ import com.linkedin.datahub.graphql.generated.ListOwnershipTypesResult;
 import com.linkedin.datahub.graphql.generated.ListQueriesResult;
 import com.linkedin.datahub.graphql.generated.ListTestsResult;
 import com.linkedin.datahub.graphql.generated.ListViewsResult;
+import com.linkedin.datahub.graphql.generated.ListBusinessAttributesResult;
 import com.linkedin.datahub.graphql.generated.MLFeature;
 import com.linkedin.datahub.graphql.generated.MLFeatureProperties;
 import com.linkedin.datahub.graphql.generated.MLFeatureTable;
@@ -94,6 +95,8 @@ import com.linkedin.datahub.graphql.generated.SiblingProperties;
 import com.linkedin.datahub.graphql.generated.Test;
 import com.linkedin.datahub.graphql.generated.TestResult;
 import com.linkedin.datahub.graphql.generated.UserUsageCounts;
+import com.linkedin.datahub.graphql.generated.BusinessAttribute;
+import com.linkedin.datahub.graphql.generated.BusinessAttributeAssociation;
 import com.linkedin.datahub.graphql.resolvers.MeResolver;
 import com.linkedin.datahub.graphql.resolvers.assertion.AssertionRunEventResolver;
 import com.linkedin.datahub.graphql.resolvers.assertion.DeleteAssertionResolver;
@@ -1161,6 +1164,7 @@ public class GmsGraphQLEngine {
                 .dataFetcher("ownershipType", new EntityTypeResolver(entityTypes,
                     (env) -> ((Owner) env.getSource()).getOwnershipType()))
             );
+        // TODO add business attribute list resolver
     }
 
     /**
@@ -1890,8 +1894,20 @@ public class GmsGraphQLEngine {
     private void configureBusinessAttributeResolver(final RuntimeWiring.Builder builder) {
         builder.type("BusinessAttribute", typeWiring -> typeWiring
                 .dataFetcher("exists", new EntityExistsResolver(entityService))
-                .dataFetcher("privileges", new EntityPrivilegesResolver(entityClient))
+                .dataFetcher("privileges", new EntityPrivilegesResolver(entityClient)))
+            .type("ListBusinessAttributesResult", typeWiring -> typeWiring
+                .dataFetcher("businessAttributes", new LoadableTypeBatchResolver<>(
+                    businessAttributeType,
+                    (env) -> ((ListBusinessAttributesResult) env.getSource()).getBusinessAttributes().stream()
+                        .map(BusinessAttribute::getUrn)
+                        .collect(Collectors.toList())))
+            );
+    }
+    private void configureBusinessAttributeAssociationResolver(final RuntimeWiring.Builder builder) {
+        builder.type("BusinessAttributeAssociation", typeWiring -> typeWiring
+                .dataFetcher("businessAttribute",
+                        new LoadableTypeResolver<>(businessAttributeType,
+                                (env) -> ((BusinessAttributeAssociation) env.getSource()).getBusinessAttribute().getUrn()))
         );
-
     }
 }

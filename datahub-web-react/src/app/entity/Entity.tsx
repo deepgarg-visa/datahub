@@ -180,4 +180,9 @@ export interface Entity<T> {
      * Returns the profile component to be displayed in our Chrome extension
      */
     renderEmbeddedProfile?: (urn: string) => JSX.Element;
+
+    /**
+     * Returns the url to be navigated to when clicked on Cards
+     */
+    getCustomCardUrlPath?: () => string | undefined;
 }

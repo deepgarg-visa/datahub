@@ -57,6 +57,13 @@ fragment glossaryTerms on GlossaryTerms {
     }
 }
 
+fragment businessAttribute on BusinessAttributeAssociation {
+    businessAttribute {
+        ...businessAttributeFields
+    }
+    associatedUrn
+}
+
 fragment deprecationFields on Deprecation {
     actor
     deprecated

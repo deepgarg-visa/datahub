@@ -237,6 +237,10 @@ type Query {
     """
     businessAttribute(urn: String!): BusinessAttribute
 
+    """
+    Fetch all Business Attributes
+    """
+    listBusinessAttributes(input: ListBusinessAttributesInput!): ListBusinessAttributesResult
 }
 
 """
@@ -1535,7 +1539,7 @@ type RoleUser {
 
 type RoleProperties {
     """
-    Name of the Role in an organisation 
+    Name of the Role in an organisation
     """
     name: String!
 
@@ -2976,6 +2980,11 @@ type EditableSchemaFieldInfo {
     Glossary terms associated with the field
     """
     glossaryTerms: GlossaryTerms
+
+    """
+    Business Attribute associated with the field
+    """
+    businessAttributes: BusinessAttributes
 }
 
 """
@@ -11292,7 +11301,7 @@ type BusinessAttribute implements Entity {
     """
     Properties about a Business Attribute
     """
-    businessAttributeInfo: BusinessAttributeInfo
+    properties: BusinessAttributeInfo
 
     """
     Ownership metadata of the Business Attribute
@@ -11429,4 +11438,74 @@ input AddBusinessAttributeInput {
     resource urns to add the business attribute to
     """
     resourceUrn: ResourceRefInput!
+}
+
+"""
+Business attributes attached to the metadata
+"""
+type BusinessAttributes {
+    """
+    Business Attribute attached to the Metadata Entity
+    """
+    businessAttribute: BusinessAttributeAssociation!
+}
+
+"""
+Input required to attach business attribute to an entity
+"""
+type BusinessAttributeAssociation {
+    """
+    Business Attribute itself
+    """
+    businessAttribute: BusinessAttribute!
+
+    """
+    Reference back to the associated urn for tracking purposes e.g. when sibling nodes are merged together
+    """
+    associatedUrn: String!
+}
+
+"""
+Input provided when listing Business Attribute
+"""
+input ListBusinessAttributesInput {
+    """
+    The starting offset of the result set returned
+    """
+    start: Int
+
+    """
+    The maximum number of Business Attributes to be returned in the result set
+    """
+    count: Int
+
+    """
+    Optional search query
+    """
+    query: String
+}
+
+"""
+The result obtained when listing Business Attribute
+"""
+type ListBusinessAttributesResult {
+    """
+    The starting offset of the result set returned
+    """
+    start: Int!
+
+    """
+    The number of Business Attributes in the returned result set
+    """
+    count: Int!
+
+    """
+    The total number of Business Attributes in the result set
+    """
+    total: Int!
+
+    """
+    The Business Attributes
+    """
+    businessAttributes: [BusinessAttribute!]!
 }

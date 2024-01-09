@@ -5,17 +5,32 @@ query getBusinessAttribute($urn: String!) {
     }
 }
 
+query listBusinessAttributes($start: Int!, $count: Int!, $query: String) {
+    listBusinessAttributes(input: { start: $start, count: $count, query: $query }) {
+        start
+        count
+        total
+        businessAttributes {
+            ...businessAttributeFields
+        }
+    }
+}
+
 fragment businessAttributeFields on BusinessAttribute {
     urn
     type
-    businessAttributeInfo {
+#    ownership {
+#        ...ownershipFields
+#    }
+    properties {
         name
         description
-        type
+        businessAttributeDataType: type
         tags {
             tags {
                 tag {
                     urn
+                    name
                     properties {
                         name
                     }
@@ -27,6 +42,10 @@ fragment businessAttributeFields on BusinessAttribute {
             terms {
                 term {
                     urn
+                    type
+                    properties {
+                        name
+                    }
                 }
                 associatedUrn
             }

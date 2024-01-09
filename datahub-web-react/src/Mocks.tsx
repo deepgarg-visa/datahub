@@ -1686,7 +1686,7 @@ export const recommendationModules = [
 ];
 
 /*
-    Define mock data to be returned by Apollo MockProvider. 
+    Define mock data to be returned by Apollo MockProvider.
 */
 export const mocks = [
     {
@@ -3633,4 +3633,6 @@ export const platformPrivileges: PlatformPrivileges = {
     manageGlobalViews: true,
     manageOwnershipTypes: true,
     manageGlobalAnnouncements: true,
+    createBusinessAttributes: true,
+    manageBusinessAttributes: true,
 };

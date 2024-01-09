@@ -1,10 +1,19 @@
 import * as React from 'react';
-import { DatabaseFilled, DatabaseOutlined } from '@ant-design/icons';
+import { GlobalOutlined } from '@ant-design/icons';
 import { BusinessAttribute, EntityType, SearchResult } from '../../../types.generated';
 import { Entity, EntityCapabilityType, IconStyleType, PreviewType } from '../Entity';
 import { getDataForEntityType } from '../shared/containers/profile/utils';
-import DomainIcon from '../../domain/DomainIcon';
-import DefaultPreviewCard from '../../preview/DefaultPreviewCard';
+import { EntityProfile } from '../shared/containers/profile/EntityProfile';
+import { useGetBusinessAttributeQuery } from '../../../graphql/businessAttribute.generated';
+import { EntityMenuItems } from '../shared/EntityDropdown/EntityDropdown';
+import { DocumentationTab } from '../shared/tabs/Documentation/DocumentationTab';
+// import GlossaryRelatedEntity from './profile/GlossaryRelatedEntity';
+import { PropertiesTab } from '../shared/tabs/Properties/PropertiesTab';
+import { SidebarAboutSection } from '../shared/containers/profile/sidebar/AboutSection/SidebarAboutSection';
+import { SidebarOwnerSection } from '../shared/containers/profile/sidebar/Ownership/sidebar/SidebarOwnerSection';
+import { SidebarTagsSection } from '../shared/containers/profile/sidebar/SidebarTagsSection';
+import { Preview } from './preview/Preview';
+import { PageRoutes } from '../../../conf/Global';
 
 /**
  *  Definition of datahub Business Attribute Entity
@@ -15,11 +24,11 @@ export class BusinessAttributeEntity implements Entity<BusinessAttribute> {
 
     icon = (fontSize: number, styleType: IconStyleType, color?: string) => {
         if (styleType === IconStyleType.TAB_VIEW) {
-            return <DatabaseOutlined style={{ fontSize, color }} />;
+            return <GlobalOutlined style={{ fontSize, color }} />;
         }
 
         if (styleType === IconStyleType.HIGHLIGHT) {
-            return <DatabaseFilled style={{ fontSize, color: color || '#B37FEB' }} />;
+            return <GlobalOutlined style={{ fontSize, color: color || '#B37FEB' }} />;
         }
 
         if (styleType === IconStyleType.SVG) {
@@ -30,7 +39,7 @@ export class BusinessAttributeEntity implements Entity<BusinessAttribute> {
         }
 
         return (
-            <DatabaseOutlined
+            <GlobalOutlined
                 style={{
                     fontSize,
                     color: color || '#BFBFBF',
@@ -40,15 +49,17 @@ export class BusinessAttributeEntity implements Entity<BusinessAttribute> {
     };
 
     displayName = (data: BusinessAttribute) => {
-        console.log('displayName:::', data?.businessAttributeInfo);
-        return data?.businessAttributeInfo?.name || data?.urn;
+        console.log('displayName:::', data?.properties);
+        return data?.properties?.name || data?.urn;
     };
 
-    getPathName = () => 'businessAttribute';
+    getPathName = () => 'business-attribute';
 
     getEntityName = () => 'Business Attribute';
 
     getCollectionName = () => 'Business Attributes';
+
+    getCustomCardUrlPath = () => PageRoutes.BUSINESS_ATTRIBUTE;
 
     isBrowseEnabled = () => true;
 
@@ -58,7 +69,7 @@ export class BusinessAttributeEntity implements Entity<BusinessAttribute> {
 
     getOverridePropertiesFromEntity = (data: BusinessAttribute) => {
         return {
-            name: data.businessAttributeInfo?.name,
+            name: data.properties?.name,
         };
     };
 
@@ -71,40 +82,64 @@ export class BusinessAttributeEntity implements Entity<BusinessAttribute> {
     };
 
     renderPreview = (_: PreviewType, data: BusinessAttribute) => {
-        // TODO: Create a preview tsx file inside businessAttribute entity and attach it here
         return (
-            <DefaultPreviewCard
-                url="/somePath"
-                name={this.displayName(data)}
+            <Preview
                 urn={data.urn}
-                description={data.businessAttributeInfo?.description || ''}
-                type="Business Attribute"
-                typeIcon={
-                    <DomainIcon
-                        style={{
-                            fontSize: 14,
-                            color: 'Red',
-                        }}
-                    />
-                }
+                name={this.displayName(data)}
+                description={data.properties?.description || ''}
                 owners={data.ownership?.owners}
-                logoComponent={this.icon(12, IconStyleType.ACCENT)}
-                insights={null}
-                parentEntities={null}
-                snippet={null}
             />
         );
     };
 
     renderProfile = (urn: string) => {
-        // TODO: Use EntityProfile inside shared folder
-        return <></>;
+        return (
+            <EntityProfile
+                urn={urn}
+                entityType={EntityType.BusinessAttribute}
+                useEntityQuery={useGetBusinessAttributeQuery as any}
+                headerDropdownItems={new Set([EntityMenuItems.DELETE])}
+                isNameEditable
+                hideBrowseBar
+                tabs={[
+                    {
+                        name: 'Documentation',
+                        component: DocumentationTab,
+                    },
+                    {
+                        name: 'Related Entities',
+                        component: PropertiesTab,
+                    },
+                    {
+                        name: 'Properties',
+                        component: PropertiesTab,
+                    },
+                ]}
+                sidebarSections={[
+                    {
+                        component: SidebarAboutSection,
+                    },
+                    {
+                        component: SidebarOwnerSection,
+                    },
+                    {
+                        component: SidebarTagsSection,
+                        properties: {
+                            hasTags: true,
+                            hasTerms: true,
+                            customTagPath: 'properties.tags',
+                            customTermPath: 'properties.glossaryTerms',
+                        },
+                    },
+                ]}
+                getOverrideProperties={this.getOverridePropertiesFromEntity}
+            />
+        );
     };
 
     renderSearch = (result: SearchResult) => {
-        // TODO: add preview for search result like renderPreview
         return (
-            <DatabaseOutlined
+            <GlobalOutlined
                 style={{
                     fontSize: 12,
                     color: 'Brown',
