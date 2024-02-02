@@ -86,7 +86,7 @@ public class ESUtils {
     put("fieldGlossaryTerms", ImmutableList.of("fieldGlossaryTerms", "editedFieldGlossaryTerms"));
     put("fieldDescriptions", ImmutableList.of("fieldDescriptions", "editedFieldDescriptions"));
     put("description", ImmutableList.of("description", "editedDescription"));
-    put("businessAttribute", ImmutableList.of("editedFieldBusinessAttribute", "businessAttribute"));
+    put("businessAttribute", ImmutableList.of("editedFieldBusinessAttributeRef", "editedFieldBusinessAttributeRef.urn"));
   }};
 
   public static final Set<String> BOOLEAN_FIELDS = ImmutableSet.of(

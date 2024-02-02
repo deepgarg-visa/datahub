@@ -124,7 +124,7 @@ public class ReindexConfig {
                         getOrDefault(super.currentMappings, List.of("properties")),
                         getOrDefault(super.targetMappings, List.of("properties")));
                 super.requiresApplyMappings = !mappingsDiff.entriesDiffering().isEmpty()
-                        || !mappingsDiff.entriesOnlyOnRight().isEmpty() || !mappingsDiff.entriesOnlyOnLeft().isEmpty();
+                        || !mappingsDiff.entriesOnlyOnRight().isEmpty();
                 super.isPureMappingsAddition = super.requiresApplyMappings
                         && mappingsDiff.entriesDiffering().isEmpty()
                         && !mappingsDiff.entriesOnlyOnRight().isEmpty();

@@ -223,7 +223,6 @@ public class SearchDocumentTransformer {
       String finalFieldName = fieldName;
       getNodeForRef(depth, fieldValues.get(0), fieldType).ifPresent(node -> searchDocument.set(finalFieldName, node));
     }
-
   }
 
   private Optional<JsonNode> getNodeForRef(final int depth, final Object fieldValue,
@@ -235,44 +234,43 @@ public class SearchDocumentTransformer {
         return Optional.of(JsonNodeFactory.instance.textNode(fieldValue.toString()));
       }
     }
-    if (fieldType == FieldType.URN || fieldType == FieldType.OBJECT) {
+    if (fieldType == FieldType.URN) {
       ObjectNode resultNode = JsonNodeFactory.instance.objectNode();
       try {
         Urn eAUrn = EntityUtils.getUrnFromString(fieldValue.toString());
-        if (entityClient.exists(eAUrn)) {
-          resultNode.set("urn", JsonNodeFactory.instance.textNode(fieldValue.toString()));
-          String entityType = eAUrn.getEntityType();
-          EntitySpec entitySpec = entityRegistry.getEntitySpec(entityType);
-          for (Map.Entry<String, AspectSpec> mapEntry : entitySpec.getAspectSpecMap().entrySet()) {
-            String aspectName = mapEntry.getKey();
-            AspectSpec aspectSpec = mapEntry.getValue();
-            if (!Constants.SKIP_REFRENCE_ASPECT.contains(aspectName)) {
-              try {
-                RecordTemplate aspectDetails = entityClient.getLatestAspect(eAUrn.toString(), aspectName);
-                // Extract searchable fields and create node using getNodeForSearchable
-                final Map<SearchableFieldSpec, List<Object>> extractedSearchableFields =
-                        FieldExtractor.extractFields(aspectDetails, aspectSpec.getSearchableFieldSpecs(), maxValueLength);
-                for (Map.Entry<SearchableFieldSpec, List<Object>> entry : extractedSearchableFields.entrySet()) {
-                  SearchableFieldSpec spec = entry.getKey();
-                  List<Object> value = entry.getValue();
-                  String fieldName = spec.getSearchableAnnotation().getFieldName();
-                  if (value.isEmpty()) {
-                    continue;
-                  }
+        if (!entityClient.exists(eAUrn)) {
+          return Optional.ofNullable(JsonNodeFactory.instance.nullNode());
+        }
+        resultNode.set("urn", JsonNodeFactory.instance.textNode(fieldValue.toString()));
+        String entityType = eAUrn.getEntityType();
+        EntitySpec entitySpec = entityRegistry.getEntitySpec(entityType);
+        for (Map.Entry<String, AspectSpec> mapEntry : entitySpec.getAspectSpecMap().entrySet()) {
+          String aspectName = mapEntry.getKey();
+          AspectSpec aspectSpec = mapEntry.getValue();
+          if (!Constants.SKIP_REFERENCE_ASPECT.contains(aspectName)) {
+            try {
+              RecordTemplate aspectDetails = entityClient.getLatestAspect(eAUrn.toString(), aspectName);
+              // Extract searchable fields and create node using getNodeForSearchable
+              final Map<SearchableFieldSpec, List<Object>> extractedSearchableFields =
+                      FieldExtractor.extractFields(aspectDetails, aspectSpec.getSearchableFieldSpecs(), maxValueLength);
+              for (Map.Entry<SearchableFieldSpec, List<Object>> entry : extractedSearchableFields.entrySet()) {
+                SearchableFieldSpec spec = entry.getKey();
+                List<Object> value = entry.getValue();
+                String fieldName = spec.getSearchableAnnotation().getFieldName();
+                if (!value.isEmpty()) {
                   resultNode.set(fieldName, getNodeForSearchable(spec, value).get(fieldName));
                 }
+              }
 
-                // Extract searchable ref fields and create node using getNodeForRef
-                final Map<SearchableRefFieldSpec, List<Object>> extractedSearchableRefFields =
-                        FieldExtractor.extractFields(aspectDetails, aspectSpec.getSearchableRefFieldSpecs(), maxValueLength);
-                for (Map.Entry<SearchableRefFieldSpec, List<Object>> entry : extractedSearchableRefFields.entrySet()) {
-                  SearchableRefFieldSpec spec = entry.getKey();
-                  List<Object> value = entry.getValue();
-                  String fieldName = spec.getSearchableRefAnnotation().getFieldName();
-                  boolean isArray = spec.isArray();
-                  if (value.isEmpty()) {
-                    continue;
-                  }
+              // Extract searchable ref fields and create node using getNodeForRef
+              final Map<SearchableRefFieldSpec, List<Object>> extractedSearchableRefFields =
+                      FieldExtractor.extractFields(aspectDetails, aspectSpec.getSearchableRefFieldSpecs(), maxValueLength);
+              for (Map.Entry<SearchableRefFieldSpec, List<Object>> entry : extractedSearchableRefFields.entrySet()) {
+                SearchableRefFieldSpec spec = entry.getKey();
+                List<Object> value = entry.getValue();
+                String fieldName = spec.getSearchableRefAnnotation().getFieldName();
+                boolean isArray = spec.isArray();
+                if (!value.isEmpty()) {
                   if (isArray) {
                     ArrayNode arrayNode = JsonNodeFactory.instance.arrayNode();
                     value.subList(0, Math.min(value.size(), maxArrayLength))
@@ -287,10 +285,9 @@ public class SearchDocumentTransformer {
                     }
                   }
                 }
-              } catch (RemoteInvocationException e) {
-                log.error("Error while fetching aspect details of {} for urn {} : {}", aspectName, eAUrn, e.getMessage());
-                continue;
               }
+            } catch (RemoteInvocationException e) {
+              log.error("Error while fetching aspect details of {} for urn {} : {}", aspectName, eAUrn, e.getMessage());
             }
           }
         }
@@ -382,10 +379,6 @@ public class SearchDocumentTransformer {
             : Optional.of(JsonNodeFactory.instance.textNode(fieldValue.toString()));
     }
   }
-
-//  private List<FieldSpec> getAspectToSpect(String aspectName){
-//    return entityRegistry.getAspectSpecs().get(aspectName);
-//  }
 
   /**
    * The browsePathsV2 aspect is a list of objects and the @Searchable annotation specifies a

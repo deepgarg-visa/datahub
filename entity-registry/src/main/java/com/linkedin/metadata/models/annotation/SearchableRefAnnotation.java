@@ -43,23 +43,7 @@ public class SearchableRefAnnotation {
     String refType;
     // (Optional) Aliases for this given field that can be used for sorting etc.
     List<String> fieldNameAliases;
-
-
-
-//    public enum FieldType {
-//        KEYWORD,
-//        TEXT,
-//        TEXT_PARTIAL,
-//        BROWSE_PATH,
-//        URN,
-//        URN_PARTIAL,
-//        BOOLEAN,
-//        COUNT,
-//        DATETIME,
-//        OBJECT,
-//        BROWSE_PATH_V2,
-//        WORD_GRAM
-//    }
+    
 
     @Nonnull
     public static SearchableRefAnnotation fromPegasusAnnotationObject(@Nonnull final Object annotationObj,

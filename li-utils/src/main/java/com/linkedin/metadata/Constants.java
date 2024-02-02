@@ -366,7 +366,7 @@ public class Constants {
   // DAO
   public static final long LATEST_VERSION = 0;
 
-  public static final List<String> SKIP_REFRENCE_ASPECT = Arrays.asList("ownership", "status", "institutionalMemory");
+  public static final List<String> SKIP_REFERENCE_ASPECT = Arrays.asList("ownership", "status", "institutionalMemory");
   private Constants() {
   }
 }

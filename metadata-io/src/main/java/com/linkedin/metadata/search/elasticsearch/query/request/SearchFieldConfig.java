@@ -1,5 +1,6 @@
 package com.linkedin.metadata.search.elasticsearch.query.request;
 
+import com.linkedin.metadata.models.AspectSpec;
 import com.linkedin.metadata.models.EntitySpec;
 import com.linkedin.metadata.models.SearchableFieldSpec;
 import com.linkedin.metadata.models.SearchableRefFieldSpec;
@@ -14,8 +15,10 @@ import lombok.experimental.Accessors;
 import javax.annotation.Nonnull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import static com.linkedin.metadata.Constants.SKIP_REFERENCE_ASPECT;
 import static com.linkedin.metadata.search.elasticsearch.indexbuilder.SettingsBuilder.*;
 
 
@@ -130,21 +133,27 @@ public class SearchFieldConfig {
             return fieldConfigs;
         }
 
-        for (SearchableFieldSpec searchableFieldSpec : refEntitySpec.getSearchableFieldSpecs()) {
-            String refFieldName = searchableFieldSpec.getSearchableAnnotation().getFieldName();
-            refFieldName = fieldName + "." + refFieldName;
+        List<AspectSpec> aspectSpecs = refEntitySpec.getAspectSpecs();
 
-            final SearchableAnnotation searchableAnnotation = searchableFieldSpec.getSearchableAnnotation();
-            final float refBoost = (float) searchableAnnotation.getBoostScore() * boost;
-            final SearchableAnnotation.FieldType refFieldType = searchableAnnotation.getFieldType();
-            fieldConfigs.add(detectSubFieldType(refFieldName, 1.0f, refFieldType, searchableAnnotation.isQueryByDefault()));
-        }
+        for (AspectSpec aspectSpec : aspectSpecs) {
+             if (!SKIP_REFERENCE_ASPECT.contains(aspectSpec.getName())) {
+                for (SearchableFieldSpec searchableFieldSpec : aspectSpec.getSearchableFieldSpecs()) {
+                    String refFieldName = searchableFieldSpec.getSearchableAnnotation().getFieldName();
+                    refFieldName = fieldName + "." + refFieldName;
 
-        for (SearchableRefFieldSpec searchableRefFieldSpec : refEntitySpec.getSearchableRefFieldSpecs()) {
-            String refFieldName = searchableRefFieldSpec.getSearchableRefAnnotation().getFieldName();
-            refFieldName = fieldName + "." + refFieldName;
-            final float refBoost = (float) searchableRefFieldSpec.getSearchableRefAnnotation().getBoostScore() * boost;
-            fieldConfigs.addAll(detectSubFieldType(searchableRefFieldSpec, depth - 1, entityRegistry, 1.0f, refFieldName));
+                    final SearchableAnnotation searchableAnnotation = searchableFieldSpec.getSearchableAnnotation();
+                    final float refBoost = (float) searchableAnnotation.getBoostScore() * boost;
+                    final SearchableAnnotation.FieldType refFieldType = searchableAnnotation.getFieldType();
+                    fieldConfigs.add(detectSubFieldType(refFieldName, refBoost, refFieldType, searchableAnnotation.isQueryByDefault()));
+                }
+
+                for (SearchableRefFieldSpec searchableRefFieldSpec : aspectSpec.getSearchableRefFieldSpecs()) {
+                    String refFieldName = searchableRefFieldSpec.getSearchableRefAnnotation().getFieldName();
+                    refFieldName = fieldName + "." + refFieldName;
+                    final float refBoost = (float) searchableRefFieldSpec.getSearchableRefAnnotation().getBoostScore() * boost;
+                    fieldConfigs.addAll(detectSubFieldType(searchableRefFieldSpec, depth - 1, entityRegistry, refBoost, refFieldName));
+                }
+            }
         }
 
         return fieldConfigs;
