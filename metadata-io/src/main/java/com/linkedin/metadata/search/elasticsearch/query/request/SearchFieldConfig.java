@@ -120,7 +120,10 @@ public class SearchFieldConfig {
       return fieldConfigs;
     }
 
-    List<AspectSpec> aspectSpecs = refEntitySpec.getAspectSpecs();
+      String urnFieldName = fieldName + ".urn";
+      fieldConfigs.add(
+              detectSubFieldType(urnFieldName, boost, SearchableAnnotation.FieldType.URN, true));
+      List<AspectSpec> aspectSpecs = refEntitySpec.getAspectSpecs();
 
     for (AspectSpec aspectSpec : aspectSpecs) {
       if (!SKIP_REFERENCE_ASPECT.contains(aspectSpec.getName())) {
