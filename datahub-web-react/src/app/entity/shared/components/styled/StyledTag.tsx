@@ -6,7 +6,7 @@ export const generateColor = new ColorHash({
     saturation: 0.9,
 });
 
-export const StyledTag = styled(Tag)<{ $color: any; $colorHash?: string; fontSize?: number; highlightTag?: boolean }>`
+export const StyledTag = styled(Tag)<{ $color: any; $colorHash?: string; fontSize?: number; highlightTag?: boolean, preventFlexShrink?: boolean }>`
     &&& {
         ${(props) =>
             props.highlightTag &&
@@ -29,6 +29,7 @@ export const StyledTag = styled(Tag)<{ $color: any; $colorHash?: string; fontSiz
                     : props.$color};
                 border-radius: 100em;
                 margin-right: 4px;
+                ${props.preventFlexShrink && 'flex-shrink: 0;'}
             }
         `}
 `;

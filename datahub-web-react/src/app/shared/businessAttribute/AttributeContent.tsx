@@ -16,10 +16,27 @@ const StyledAttribute = styled(Tag)<{ fontSize?: number; highlightAttribute?: bo
         ${(props) =>
             props.highlightAttribute &&
             `background: ${props.theme.styles['highlight-color']};
-            border: 1px solid ${props.theme.styles['highlight-border-color']};
+        border: 1px solid ${props.theme.styles['highlight-border-color']};
         `}
     }
     ${(props) => props.fontSize && `font-size: ${props.fontSize}px;`}
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+`;
+
+const StyledGlobalOutlined = styled(GlobalOutlined)`
+    margin-right: 4px;
+`;
+
+const StyledHighlight = styled(Highlight)`
+    margin-left: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 interface Props {
@@ -99,21 +116,22 @@ export default function AttributeContent({
         });
     };
 
+    const handleRemoveAttribute = (e: React.MouseEvent) => {
+        e.preventDefault();
+        removeAttribute(businessAttribute as BusinessAttributeAssociation);
+    };
+
     return (
         <StyledAttribute
-            style={{ cursor: 'pointer', whiteSpace: 'normal' }}
             closable={canRemove && !readOnly}
-            onClose={(e) => {
-                e.preventDefault();
-                removeAttribute(businessAttribute as BusinessAttributeAssociation);
-            }}
+            onClose={handleRemoveAttribute}
             fontSize={fontSize}
             highlightAttribute={highlightAttribute}
         >
-            <GlobalOutlined style={{ marginRight: '4px' }} />
-            <Highlight style={{ marginLeft: 0 }} matchStyle={highlightMatchStyle} search={highlightText}>
+            <StyledGlobalOutlined />
+            <StyledHighlight matchStyle={highlightMatchStyle} search={highlightText}>
                 {entityRegistry.getDisplayName(EntityType.BusinessAttribute, businessAttribute?.businessAttribute)}
-            </Highlight>
+            </StyledHighlight>
         </StyledAttribute>
     );
 }

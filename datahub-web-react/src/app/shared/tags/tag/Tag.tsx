@@ -13,6 +13,8 @@ import { useHasMatchedFieldByUrn } from '../../../search/context/SearchResultCon
 const TagLink = styled.span`
     display: inline-block;
     margin-bottom: 8px;
+    margin-right: 8px;
+    max-width: 100%;
 `;
 
 const highlightMatchStyle = { background: '#ffe58f', padding: '0' };
@@ -102,7 +104,7 @@ export default function Tag({
             <HoverEntityTooltip entity={tag.tag}>
                 <TagLink data-testid={`tag-${displayName}`}>
                     <StyledTag
-                        style={{ cursor: 'pointer' }}
+                        style={{ cursor: 'pointer', width:'100%', display: 'flex', alignItems: 'center'}}
                         onClick={() => showTagProfileDrawer(tag?.tag?.urn)}
                         $colorHash={tag?.tag?.urn}
                         $color={tag?.tag?.properties?.colorHex}
@@ -113,9 +115,10 @@ export default function Tag({
                         }}
                         fontSize={fontSize}
                         highlightTag={highlightTag}
+                        preventFlexShrink
                     >
                         <Highlight
-                            style={{ marginLeft: 0, fontSize }}
+                            style={{ marginLeft: 0, fontSize, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', width:'100%' }}
                             matchStyle={highlightMatchStyle}
                             search={highlightText}
                         >

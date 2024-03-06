@@ -20,6 +20,19 @@ const StyledTag = styled(Tag)<{ fontSize?: number; highlightTerm?: boolean }>`
             `}
     }
     ${(props) => props.fontSize && `font-size: ${props.fontSize}px;`}
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+`;
+
+const StyledHighlight = styled(Highlight)`
+    margin-left: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 interface Props {
@@ -98,9 +111,9 @@ export default function TermContent({
             highlightTerm={highlightTerm}
         >
             <BookOutlined style={{ marginRight: '4px' }} />
-            <Highlight style={{ marginLeft: 0 }} matchStyle={highlightMatchStyle} search={highlightText}>
+            <StyledHighlight style={{ marginLeft: 0 }} matchStyle={highlightMatchStyle} search={highlightText}>
                 {entityRegistry.getDisplayName(EntityType.GlossaryTerm, term.term)}
-            </Highlight>
+            </StyledHighlight>
         </StyledTag>
     );
 }

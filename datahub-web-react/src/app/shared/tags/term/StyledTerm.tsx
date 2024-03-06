@@ -9,6 +9,8 @@ import TermContent from './TermContent';
 const TermLink = styled(Link)`
     display: inline-block;
     margin-bottom: 8px;
+    margin-right: 8px;
+    max-width: 100%;
 `;
 
 const TermWrapper = styled.span`

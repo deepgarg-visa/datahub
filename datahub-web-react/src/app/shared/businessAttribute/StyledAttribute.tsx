@@ -9,6 +9,8 @@ import AttributeContent from './AttributeContent';
 const AttributeLink = styled(Link)`
     display: inline-block;
     margin-bottom: 8px;
+    margin-right: 8px;
+    max-width: 100%;
 `;
 
 const AttributeWrapper = styled.span`
