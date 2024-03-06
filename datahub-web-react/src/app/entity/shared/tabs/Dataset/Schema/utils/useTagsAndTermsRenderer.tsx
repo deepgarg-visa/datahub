@@ -26,54 +26,24 @@ export default function useTagsAndTermsRenderer(
             (candidateEditableFieldInfo) => pathMatchesNewPath(candidateEditableFieldInfo.fieldPath, record.fieldPath),
         );
 
-        const newRecord = { ...record };
+        const businessAttributeTags = relevantEditableFieldInfo?.businessAttributes?.businessAttribute?.businessAttribute?.properties?.tags?.tags || [];
+        const businessAttributeTerms = relevantEditableFieldInfo?.businessAttributes?.businessAttribute?.businessAttribute?.properties?.glossaryTerms?.terms || [];
 
-        if (!newRecord.glossaryTerms) {
-            newRecord.glossaryTerms = { terms: [] };
-        }
-
-        if (!newRecord.glossaryTerms.terms) {
-            newRecord.glossaryTerms.terms = [];
-        }
-
-        if (
-            relevantEditableFieldInfo?.businessAttributes?.businessAttribute?.businessAttribute?.properties
-                ?.glossaryTerms?.terms
-        ) {
-            newRecord.glossaryTerms.terms = [
-                ...newRecord.glossaryTerms.terms,
-                ...relevantEditableFieldInfo.businessAttributes.businessAttribute.businessAttribute.properties
-                    .glossaryTerms.terms,
-            ];
-        }
-        let newTags = {};
-        if (
-            relevantEditableFieldInfo?.businessAttributes?.businessAttribute?.businessAttribute?.properties?.tags?.tags
-        ) {
-            newTags = {
-                ...tags,
-                tags: [
-                    ...(tags?.tags || []),
-                    ...relevantEditableFieldInfo?.businessAttributes?.businessAttribute?.businessAttribute?.properties
-                        ?.tags?.tags,
-                ],
-            };
-        }
         return (
-            <div data-testid={`schema-field-${newRecord.fieldPath}-${options.showTags ? 'tags' : 'terms'}`}>
+            <div data-testid={`schema-field-${record.fieldPath}-${options.showTags ? 'tags' : 'terms'}`}>
                 <TagTermGroup
-                    uneditableTags={options.showTags ? newTags : null}
+                    uneditableTags={options.showTags ? { tags: [...(tags?.tags || []), ...businessAttributeTags] } : null}
                     editableTags={options.showTags ? relevantEditableFieldInfo?.globalTags : null}
-                    uneditableGlossaryTerms={options.showTerms ? newRecord.glossaryTerms : null}
+                    uneditableGlossaryTerms={options.showTerms ? { terms: [...(record?.glossaryTerms?.terms || []), ...businessAttributeTerms] } : null}
                     editableGlossaryTerms={options.showTerms ? relevantEditableFieldInfo?.glossaryTerms : null}
                     canRemove
                     buttonProps={{ size: 'small' }}
-                    canAddTag={tagHoveredIndex === newRecord.fieldPath && options.showTags}
-                    canAddTerm={tagHoveredIndex === newRecord.fieldPath && options.showTerms}
+                    canAddTag={tagHoveredIndex === record.fieldPath && options.showTags}
+                    canAddTerm={tagHoveredIndex === record.fieldPath && options.showTerms}
                     onOpenModal={() => setTagHoveredIndex(undefined)}
                     entityUrn={urn}
                     entityType={EntityType.Dataset}
-                    entitySubresource={newRecord.fieldPath}
+                    entitySubresource={record.fieldPath}
                     highlightText={filterText}
                     refetch={refresh}
                 />
