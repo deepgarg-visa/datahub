@@ -1858,6 +1858,42 @@ export const mlModelGroup = {
 
 export const recommendationModules = [
     {
+        title: 'Datasets',
+        moduleId: 'Datasets',
+        renderType: RecommendationRenderType.EntityNameList,
+        content: [
+            {
+                entity: {
+                    ...dataset2,
+                },
+            },
+        ],
+    },
+    {
+        title: 'Explore your data',
+        moduleId: 'Exploreyourdata',
+        renderType: RecommendationRenderType.EntityNameList,
+        content: [
+            {
+                entity: {
+                    ...dataset2,
+                },
+            },
+        ],
+    },
+    {
+        title: 'Some Other Dataset 1',
+        moduleId: 'SomeOtherDataset1',
+        renderType: RecommendationRenderType.EntityNameList,
+        content: [
+            {
+                entity: {
+                    ...dataset2,
+                },
+            },
+        ],
+    },
+    {
         title: 'Most Popular',
         moduleId: 'MostPopular',
         renderType: RecommendationRenderType.EntityNameList,

@@ -31,7 +31,7 @@ describe('Recommendations', () => {
         await waitFor(() => expect(getByText('Popular Tags')).toBeInTheDocument());
         await waitFor(() => expect(getByText('TestTag')).toBeInTheDocument());
         await waitFor(() => expect(getByText('Most Popular')).toBeInTheDocument());
-        await waitFor(() => expect(getByText('Some Other Dataset')).toBeInTheDocument());
+        await waitFor(() => expect(getByText('Some Other Dataset 1')).toBeInTheDocument());
     });
 
     it('search results renders recommendations', async () => {
@@ -55,7 +55,7 @@ describe('Recommendations', () => {
         await waitFor(() => expect(getByText('Popular Tags')).toBeInTheDocument());
         await waitFor(() => expect(getByText('TestTag')).toBeInTheDocument());
         await waitFor(() => expect(getByText('Most Popular')).toBeInTheDocument());
-        await waitFor(() => expect(getByText('Some Other Dataset')).toBeInTheDocument());
+        await waitFor(() => expect(getByText('Some Other Dataset 1')).toBeInTheDocument());
     });
 
     // TODO: Uncomment once entity sidebar recs are fully supported.
